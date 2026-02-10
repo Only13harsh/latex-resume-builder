@@ -45,8 +45,9 @@ export interface Education {
   location: string;
   startYear: string;
   endYear: string;
-  gpa: string;
+  gpa: string; // make sure this line exists
 }
+
 
 export interface SecondaryEducation {
   class10School?: string;
