@@ -7,9 +7,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Plus, Trash2, Loader2, Sparkles } from 'lucide-react';
-import { Experience } from '@/lib/types';
+import type { Experience } from '@/lib/types';
 
 interface Step3ExperienceProps {
   onNext: () => void;
@@ -18,31 +24,41 @@ interface Step3ExperienceProps {
 
 export function Step3Experience({ onNext, onBack }: Step3ExperienceProps) {
   const { resumeData, updateExperience } = useResume();
+
   const [experiences, setExperiences] = useState<Experience[]>(
     resumeData.experience.length > 0
-      ? resumeData.experience
-      : [{
-          id: crypto.randomUUID(),
-          jobTitle: '',
-          company: '',
-          location: '',
-          startDate: '',
-          endDate: '',
-          level: 'Junior',
-          description: '',
-          bulletPoints: [],
-        }]
+      ? (resumeData.experience as Experience[])
+      : [
+          {
+            id: crypto.randomUUID(),
+            jobTitle: '',
+            company: '',
+            location: '',
+            startDate: '',
+            endDate: '',
+            level: 'Junior',
+            // keep both fields to satisfy any version of Experience
+            description: '',
+            responsibilities: '',
+            bulletPoints: [],
+          } as Experience,
+        ]
   );
+
   const [generatingFor, setGeneratingFor] = useState<string | null>(null);
 
-  const handleChange = (id: string, field: keyof Experience, value: any) => {
-    setExperiences(prev =>
-      prev.map(exp => (exp.id === id ? { ...exp, [field]: value } : exp))
+  const handleChange = (
+    id: string,
+    field: keyof Experience,
+    value: any
+  ) => {
+    setExperiences((prev) =>
+      prev.map((exp) => (exp.id === id ? { ...exp, [field]: value } : exp))
     );
   };
 
   const addExperience = () => {
-    setExperiences(prev => [
+    setExperiences((prev) => [
       ...prev,
       {
         id: crypto.randomUUID(),
@@ -52,21 +68,22 @@ export function Step3Experience({ onNext, onBack }: Step3ExperienceProps) {
         startDate: '',
         endDate: '',
         level: 'Junior',
+        description: '',
         responsibilities: '',
         bulletPoints: [],
-      },
+      } as Experience,
     ]);
   };
 
   const removeExperience = (id: string) => {
     if (experiences.length > 1) {
-      setExperiences(prev => prev.filter(exp => exp.id !== id));
+      setExperiences((prev) => prev.filter((exp) => exp.id !== id));
     }
   };
 
   const generateBulletPoints = async (id: string) => {
-    const experience = experiences.find(exp => exp.id === id);
-    if (!experience || !experience.responsibilities.trim()) {
+    const experience = experiences.find((exp) => exp.id === id);
+    if (!experience || !(experience as any).responsibilities?.trim()) {
       alert('Please enter responsibilities first');
       return;
     }
@@ -78,7 +95,7 @@ export function Step3Experience({ onNext, onBack }: Step3ExperienceProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           jobDescription: resumeData.targetRole.jobDescription,
-          experienceDescription: experience.responsibilities,
+          experienceDescription: (experience as any).responsibilities,
           jobTitle: experience.jobTitle,
           company: experience.company,
         }),
@@ -100,7 +117,7 @@ export function Step3Experience({ onNext, onBack }: Step3ExperienceProps) {
 
   const handleNext = () => {
     const validExperiences = experiences.filter(
-      exp => exp.jobTitle.trim() && exp.company.trim()
+      (exp) => exp.jobTitle.trim() && exp.company.trim()
     );
     updateExperience(validExperiences);
     onNext();
@@ -110,9 +127,7 @@ export function Step3Experience({ onNext, onBack }: Step3ExperienceProps) {
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold mb-2">Professional Experience</h2>
-        <p className="text-muted-foreground">
-          Add your work experience
-        </p>
+        <p className="text-muted-foreground">Add your work experience</p>
       </div>
 
       <div className="space-y-4">
@@ -137,7 +152,9 @@ export function Step3Experience({ onNext, onBack }: Step3ExperienceProps) {
                   <Label>Job Title *</Label>
                   <Input
                     value={exp.jobTitle}
-                    onChange={(e) => handleChange(exp.id, 'jobTitle', e.target.value)}
+                    onChange={(e) =>
+                      handleChange(exp.id, 'jobTitle', e.target.value)
+                    }
                     placeholder="Software Engineer"
                   />
                 </div>
@@ -145,7 +162,9 @@ export function Step3Experience({ onNext, onBack }: Step3ExperienceProps) {
                   <Label>Company *</Label>
                   <Input
                     value={exp.company}
-                    onChange={(e) => handleChange(exp.id, 'company', e.target.value)}
+                    onChange={(e) =>
+                      handleChange(exp.id, 'company', e.target.value)
+                    }
                     placeholder="Tech Corp"
                   />
                 </div>
@@ -155,7 +174,9 @@ export function Step3Experience({ onNext, onBack }: Step3ExperienceProps) {
                 <Label>Location</Label>
                 <Input
                   value={exp.location}
-                  onChange={(e) => handleChange(exp.id, 'location', e.target.value)}
+                  onChange={(e) =>
+                    handleChange(exp.id, 'location', e.target.value)
+                  }
                   placeholder="San Francisco, CA"
                 />
               </div>
@@ -165,7 +186,9 @@ export function Step3Experience({ onNext, onBack }: Step3ExperienceProps) {
                   <Label>Start Date</Label>
                   <Input
                     value={exp.startDate}
-                    onChange={(e) => handleChange(exp.id, 'startDate', e.target.value)}
+                    onChange={(e) =>
+                      handleChange(exp.id, 'startDate', e.target.value)
+                    }
                     placeholder="Jan 2020"
                   />
                 </div>
@@ -173,7 +196,9 @@ export function Step3Experience({ onNext, onBack }: Step3ExperienceProps) {
                   <Label>End Date</Label>
                   <Input
                     value={exp.endDate}
-                    onChange={(e) => handleChange(exp.id, 'endDate', e.target.value)}
+                    onChange={(e) =>
+                      handleChange(exp.id, 'endDate', e.target.value)
+                    }
                     placeholder="Present"
                   />
                 </div>
@@ -181,7 +206,9 @@ export function Step3Experience({ onNext, onBack }: Step3ExperienceProps) {
                   <Label>Level</Label>
                   <Select
                     value={exp.level}
-                    onValueChange={(value) => handleChange(exp.id, 'level', value)}
+                    onValueChange={(value) =>
+                      handleChange(exp.id, 'level', value)
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -200,13 +227,16 @@ export function Step3Experience({ onNext, onBack }: Step3ExperienceProps) {
               <div>
                 <Label>Responsibilities / Achievements</Label>
                 <Textarea
-                  value={exp.responsibilities}
-                  onChange={(e) => handleChange(exp.id, 'responsibilities', e.target.value)}
+                  value={(exp as any).responsibilities || ''}
+                  onChange={(e) =>
+                    handleChange(exp.id, 'responsibilities', e.target.value)
+                  }
                   placeholder="Describe your key responsibilities and achievements..."
                   className="min-h-[100px]"
                 />
                 <p className="text-xs text-muted-foreground mt-1">
-                  Example: Developed REST APIs that improved response time by 40 percent
+                  Example: Developed REST APIs that improved response time by 40
+                  percent
                 </p>
               </div>
 
@@ -239,7 +269,7 @@ export function Step3Experience({ onNext, onBack }: Step3ExperienceProps) {
                         <Input
                           value={bullet}
                           onChange={(e) => {
-                            const newBullets = [...exp.bulletPoints!];
+                            const newBullets = [...exp.bulletPoints];
                             newBullets[idx] = e.target.value;
                             handleChange(exp.id, 'bulletPoints', newBullets);
                           }}
@@ -255,7 +285,11 @@ export function Step3Experience({ onNext, onBack }: Step3ExperienceProps) {
         ))}
       </div>
 
-      <Button onClick={addExperience} variant="outline" className="w-full bg-transparent">
+      <Button
+        onClick={addExperience}
+        variant="outline"
+        className="w-full bg-transparent"
+      >
         <Plus className="w-4 h-4 mr-2" />
         Add Another Experience
       </Button>
