@@ -46,11 +46,12 @@ export function Step3Experience({ onNext, onBack }: Step3ExperienceProps) {
 
   const [generatingFor, setGeneratingFor] = useState<string | null>(null);
 
-const handleChange = (id: string, field: keyof Experience, value: any) => {
+const handleChange = (id: string, field: string, value: any) => {
   setExperiences(prev =>
     prev.map(exp => (exp.id === id ? { ...exp, [field]: value } : exp))
   );
 };
+
 
 
   const addExperience = () => {
