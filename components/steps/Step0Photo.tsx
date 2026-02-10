@@ -14,7 +14,7 @@ interface Step0PhotoProps {
 
 export function Step0Photo({ onNext }: Step0PhotoProps) {
   const { resumeData, updatePersonalInfo, updateSettings } = useResume();
-  const [preview, setPreview] = useState<string | null>(resumeData.personalInfo.photoUrl || null);
+  const [preview, setPreview] = useState<string | null>(   (resumeData.personalInfo as any).photoUrl || null );
   const [error, setError] = useState<string>('');
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
