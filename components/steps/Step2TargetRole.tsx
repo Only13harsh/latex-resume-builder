@@ -23,9 +23,9 @@ export function Step2TargetRole({ onNext, onBack }: Step2TargetRoleProps) {
   const [isExtractingKeywords, setIsExtractingKeywords] = useState(false);
 
   const handleChange = (field: keyof typeof formData, value: string | string[]) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prev) => ({ ...prev, [field]: '' }));
     }
   };
 
@@ -40,9 +40,12 @@ export function Step2TargetRole({ onNext, onBack }: Step2TargetRoleProps) {
 
     setIsGenerating(true);
     try {
-      // Get experience summary
+      // Get experience summary (cast to allow optional responsibilities)
       const experienceSummary = resumeData.experience
-        .map(exp => `${exp.jobTitle} at ${exp.company}: ${exp.responsibilities}`)
+        .map((exp) => {
+          const e = exp as any;
+          return `${e.jobTitle} at ${e.company}: ${e.responsibilities ?? ''}`;
+        })
         .join('\n');
 
       const response = await fetch('/api/ai/generate-summary', {
@@ -104,7 +107,10 @@ export function Step2TargetRole({ onNext, onBack }: Step2TargetRoleProps) {
   };
 
   const removeKeyword = (keyword: string) => {
-    handleChange('keywords', (formData.keywords || []).filter(k => k !== keyword));
+    handleChange(
+      'keywords',
+      (formData.keywords || []).filter((k) => k !== keyword)
+    );
   };
 
   const validateForm = () => {
@@ -172,7 +178,9 @@ export function Step2TargetRole({ onNext, onBack }: Step2TargetRoleProps) {
               className="min-h-[200px]"
             />
             {errors.jobDescription && (
-              <p className="text-sm text-red-600 mt-1">{errors.jobDescription}</p>
+              <p className="text-sm text-red-600 mt-1">
+                {errors.jobDescription}
+              </p>
             )}
           </div>
 
