@@ -25,9 +25,11 @@ export interface Experience {
   startDate: string;
   endDate: string;
   level: 'Intern' | 'Fresher' | 'Junior' | 'Mid' | 'Senior';
-  responsibilities?: string;  // make it optional to be safe
-  bulletPoints?: string[];
+  description: string;          // used in Step3Experience initial state
+  responsibilities?: string;    // used in Step2TargetRole summary
+  bulletPoints: string[];
 }
+
 
 export interface Skills {
   technical: string[];
