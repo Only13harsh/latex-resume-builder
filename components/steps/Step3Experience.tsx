@@ -25,25 +25,25 @@ interface Step3ExperienceProps {
 export function Step3Experience({ onNext, onBack }: Step3ExperienceProps) {
   const { resumeData, updateExperience } = useResume();
 
-  const [experiences, setExperiences] = useState<Experience[]>(
-    resumeData.experience.length > 0
-      ? (resumeData.experience as Experience[])
-      : [
-          {
-            id: crypto.randomUUID(),
-            jobTitle: '',
-            company: '',
-            location: '',
-            startDate: '',
-            endDate: '',
-            level: 'Junior',
-            // keep both fields to satisfy any version of Experience
-            description: '',
-            responsibilities: '',
-            bulletPoints: [],
-          } as Experience,
-        ]
-  );
+const [experiences, setExperiences] = useState<Experience[]>(
+  (resumeData.experience.length > 0
+    ? resumeData.experience
+    : [
+        {
+          id: crypto.randomUUID(),
+          jobTitle: '',
+          company: '',
+          location: '',
+          startDate: '',
+          endDate: '',
+          level: 'Junior',
+          description: '',
+          responsibilities: '',
+          bulletPoints: [],
+        },
+      ]) as any
+);
+
 
   const [generatingFor, setGeneratingFor] = useState<string | null>(null);
 
