@@ -1,8 +1,6 @@
 'use client';
 
-import React from "react"
-
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useResume } from '@/contexts/ResumeContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -14,7 +12,10 @@ interface Step0PhotoProps {
 
 export function Step0Photo({ onNext }: Step0PhotoProps) {
   const { resumeData, updatePersonalInfo, updateSettings } = useResume();
-  const [preview, setPreview] = useState<string | null>(   (resumeData.personalInfo as any).photoUrl || null );
+
+  const [preview, setPreview] = useState<string | null>(
+    (resumeData.personalInfo as { photoUrl?: string }).photoUrl || null
+  );
   const [error, setError] = useState<string>('');
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +42,7 @@ export function Step0Photo({ onNext }: Step0PhotoProps) {
       const result = event.target?.result as string;
       setPreview(result);
       updatePersonalInfo({
-        ...resumeData.personalInfo,
+        ...(resumeData.personalInfo as any),
         photoUrl: result,
       });
       updateSettings({
@@ -55,7 +56,7 @@ export function Step0Photo({ onNext }: Step0PhotoProps) {
   const handleRemove = () => {
     setPreview(null);
     updatePersonalInfo({
-      ...resumeData.personalInfo,
+      ...(resumeData.personalInfo as any),
       photoUrl: undefined,
     });
     updateSettings({
@@ -91,8 +92,9 @@ export function Step0Photo({ onNext }: Step0PhotoProps) {
                 ATS Recommendation
               </p>
               <p className="text-blue-700 dark:text-blue-300">
-                Most Applicant Tracking Systems cannot parse images. For best ATS compatibility, 
-                we recommend skipping the photo. You can always add it later when submitting directly to recruiters.
+                Most Applicant Tracking Systems cannot parse images. For best ATS compatibility,
+                we recommend skipping the photo. You can always add it later when submitting directly
+                to recruiters.
               </p>
             </div>
           </div>
@@ -117,7 +119,7 @@ export function Step0Photo({ onNext }: Step0PhotoProps) {
           ) : (
             <div className="relative inline-block">
               <img
-                src={preview || "/placeholder.svg"}
+                src={preview || '/placeholder.svg'}
                 alt="Preview of uploaded professional photo"
                 className="w-32 h-32 rounded-lg object-cover border-2 border-gray-200 dark:border-gray-700"
               />
