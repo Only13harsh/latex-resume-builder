@@ -25,7 +25,7 @@ export interface Experience {
   startDate: string;
   endDate: string;
   level: 'Intern' | 'Fresher' | 'Junior' | 'Mid' | 'Senior';
-  responsibilities: string;
+  responsibilities?: string;  // make it optional to be safe
   bulletPoints?: string[];
 }
 
