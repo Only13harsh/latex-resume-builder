@@ -27,20 +27,21 @@ interface Step5EducationProps {
 
 export function Step5Education({ onNext, onBack }: Step5EducationProps) {
   const { resumeData, updateEducation, updateSecondaryEducation } = useResume();
-  const [education, setEducation] = useState<Education[]>(
-    resumeData.education.length > 0
-      ? resumeData.education
-      : [{
-          id: crypto.randomUUID(),
-          degree: '',
-          specialization: '',
-          institution: '',
-          location: '',
-          startYear: '',
-          endYear: '',
-          gpa: '',
-        }]
-  );
+const [educations, setEducations] = useState<Education[]>(
+  resumeData.education.length > 0
+    ? resumeData.education
+    : [{
+        id: crypto.randomUUID(),
+        degree: '',
+        specialization: '',
+        institution: '',
+        location: '',
+        startYear: '',
+        endYear: '',
+        gpa: '',
+      }]
+);
+
   const [secondaryEd, setSecondaryEd] = useState<SecondaryEducation>(
     resumeData.secondaryEducation || {
       class10School: '',
